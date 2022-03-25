@@ -1,8 +1,58 @@
 import React from 'react'
 import { View, StatusBar, StyleSheet } from 'react-native'
 import { Flex, HStack, VStack, Text, TextInput, Button, Divider } from '@react-native-material/core'
+import axios from 'axios'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = ({navigation}) => {
+  
+  const [email, setEmail] = React.useState('')
+  const [password, setPassword] = React.useState('')
+  const [loading, setLoading] = React.useState(false)
+
+  const checkFields = () => {
+    if(email.length > 0 && password.length > 0){
+      return true;
+    }
+    return false;
+  }
+
+  const handleDealerLogin = async() => {
+    setLoading(true);
+    await axios.post('http://localhost:5000/api/dealer/login', {
+      email: email,
+      password: password
+    })
+    .then(res => {
+      console.log(res)
+      AsyncStorage.setItem('userType', 'Dealer');
+      AsyncStorage.setItem('userId', res.data.id.toString());
+      navigation.navigate('DealerPages');
+      setLoading(false);
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }
+
+  const handleDriverLogin = async() => {
+    setLoading(true);
+    await axios.post('http://localhost:5000/api/driver/login', {
+      email: email,
+      password: password
+    })
+    .then(res => {
+      console.log(res)
+      AsyncStorage.setItem('userType', 'Driver');
+      AsyncStorage.setItem('userId', res.data.id.toString());
+      // navigation.navigate('DriverPages');
+      setLoading(false);
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }
+  
   return (
     <View style={styles.container}>
       <StatusBar />
@@ -14,6 +64,8 @@ const LoginScreen = ({navigation}) => {
             label="Email" 
             color='black'
             style={{ marginTop: 16 }} 
+            value={email}
+            onChangeText={(text) => setEmail(text)}
           />
           <TextInput 
             variant="standard" 
@@ -21,13 +73,18 @@ const LoginScreen = ({navigation}) => {
             secureTextEntry={true}
             color='black'
             style={{ marginTop: 16 }} 
+            value={password}
+            onChangeText={(text) => setPassword(text)}
           />
           <Button 
-            onPress={() => navigation.navigate('Signup')}
+            disabled={checkFields() ? false : true}
+            onPress={handleDealerLogin}
             title="Login as Dealer" 
             uppercase={false}
             color="black" 
             style={{ marginTop: 16 }}
+            loading={loading}
+            loadingIndicatorPosition="trailing"
           />
           <HStack center mt={16}>
             <Divider />
@@ -35,7 +92,8 @@ const LoginScreen = ({navigation}) => {
             <Divider />
           </HStack>
           <Button 
-            onPress={() => navigation.navigate('Signup')}
+            disabled={checkFields() ? false : true}
+            onPress={handleDriverLogin}
             title="Login as Driver" 
             uppercase={false}
             color="black" 

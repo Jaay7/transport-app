@@ -6,14 +6,34 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SignupScreen from './pages/SignupScreen';
 import LoginScreen from './pages/LoginScreen';
 import SignupScreen2 from './pages/SignupScreen2';
+import DealerPages from './pages/dealer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
+
+  const [loggedIn, isLoggedIn] = React.useState(false);
+
+    React.useEffect(() => {
+      const checkLoggedIn = async () => {
+        try {
+          const value = await AsyncStorage.getItem('userId');
+          if (value !== null) {
+            isLoggedIn(true);
+          }
+        } catch (e) {
+          // error reading value
+          console.log(e);
+        }
+      }
+      checkLoggedIn();
+    }, [])
+
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="onBoarding"
+        initialRouteName={loggedIn ? "DealerPages" : "onBoarding"}
       >
         <Stack.Screen 
           name="onBoarding" 
@@ -32,6 +52,13 @@ const App = () => {
         <Stack.Screen 
           name="Login" 
           component={LoginScreen} 
+          options={{
+            headerShown: false
+          }}
+        />
+        <Stack.Screen 
+          name="DealerPages" 
+          component={DealerPages} 
           options={{
             headerShown: false
           }}
