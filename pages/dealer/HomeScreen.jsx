@@ -20,7 +20,7 @@ const HomeScreen = () => {
     React.useCallback(() => {
       const getUser = async () => {
         const userId = await AsyncStorage.getItem('userId');
-        await axios.get(`http://localhost:5000/api/dealer/getDealer/${Number(userId)}`)
+        await axios.get(`https://transport-backend-apis.herokuapp.com/api/dealer/getDealer/${Number(userId)}`)
           .then(async res => {
             console.log(res)
             setCity(res.data.city);
@@ -37,7 +37,7 @@ const HomeScreen = () => {
     React.useCallback(() => {
       setLoading(true);
       const getDrivers = async () => {
-        await axios.get(`http://localhost:5000/api/dealer/getDriversByRoutes/${city}`)
+        await axios.get(`https://transport-backend-apis.herokuapp.com/api/dealer/getDriversByRoutes/${city}`)
           .then(res => {
             console.log(res)
             setDrivers(res.data);

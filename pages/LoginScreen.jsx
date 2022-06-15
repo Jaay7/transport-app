@@ -19,7 +19,7 @@ const LoginScreen = ({navigation}) => {
 
   const handleDealerLogin = async() => {
     setLoading(true);
-    await axios.post('http://localhost:5000/api/dealer/login', {
+    await axios.post('https://transport-backend-apis.herokuapp.com/api/dealer/login', {
       email: email,
       password: password
     })
@@ -37,7 +37,7 @@ const LoginScreen = ({navigation}) => {
 
   const handleDriverLogin = async() => {
     setLoading(true);
-    await axios.post('http://localhost:5000/api/driver/login', {
+    await axios.post('http://192.168.1.118:5000/api/driver/login', {
       email: email,
       password: password
     })

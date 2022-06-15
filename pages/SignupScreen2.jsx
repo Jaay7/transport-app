@@ -16,7 +16,7 @@ const SignupScreen2 = ({route, navigation}) => {
 
   const registerDealer = () => {
     setLoading(true);
-    axios.post('http://localhost:5000/api/dealer/addDealer', {
+    axios.post('https://transport-backend-apis.herokuapp.com/api/dealer/addDealer', {
       name: name,
       email: email,
       password: password,

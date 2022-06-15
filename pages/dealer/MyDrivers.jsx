@@ -20,7 +20,7 @@ const MyDriversScreen = () => {
       setLoading(true);
       const getMyDrivers = async () => {
         const userId = await AsyncStorage.getItem('userId');
-        await axios.get(`http://localhost:5000/api/dealer/getRequestedDrivers/${userId}`)
+        await axios.get(`https://transport-backend-apis.herokuapp.com/api/dealer/getRequestedDrivers/${userId}`)
           .then(res => {
             console.log(res)
             setMyDrivers(res.data);

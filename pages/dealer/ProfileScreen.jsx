@@ -15,7 +15,7 @@ const ProfileScreen = () => {
       const getUserId = async () => {
         setLoading(true);
         const value = await AsyncStorage.getItem('userId');
-        await axios.get(`http://localhost:5000/api/dealer/getDealer/${Number(value)}`)
+        await axios.get(`https://transport-backend-apis.herokuapp.com/api/dealer/getDealer/${Number(value)}`)
           .then(res => {
             console.log(res);
             setUserData(res.data);
