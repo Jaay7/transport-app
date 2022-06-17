@@ -1,5 +1,5 @@
 import React from 'react'
-import { ActivityIndicator, HStack, Spacer, Stack, Text, Surface, Pressable, VStack, Divider } from '@react-native-material/core'
+import { ActivityIndicator, HStack, Spacer, Stack, Text, Surface, Pressable, VStack, Divider, Button } from '@react-native-material/core'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
@@ -51,6 +51,27 @@ const HomeScreen = () => {
     }, [city])
   )
 
+  const requestDriver = async (driverId) => {
+    const dealerId = await AsyncStorage.getItem('userId');
+    await axios.post(`https://transport-backend-apis.herokuapp.com/api/dealer/requestDriver/${dealerId}/${driverId}`)
+      .then(res => {
+        console.log(res)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
+  const removeRequest = async (cartId, driverId) => {
+    const dealerId = await AsyncStorage.getItem('userId');
+    await axios.delete(`https://transport-backend-apis.herokuapp.com/api/dealer/removeRequest/${cartId}/${dealerId}/${driverId}`)
+      .then(res => {
+        console.log(res)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
   
   return (
     <View style={styles.container}>
@@ -86,7 +107,7 @@ const HomeScreen = () => {
                       <HStack>
                         <Text color="gray">Age</Text>
                         <Spacer />
-                        <Text>{driver.age}</Text>
+                        <Text>{driver.age} years</Text>
                       </HStack>
                       <HStack>
                         <Text color="gray">Mobile Number</Text>
@@ -101,9 +122,43 @@ const HomeScreen = () => {
                       <HStack>
                         <Text color="gray">Truck Capacity</Text>
                         <Spacer />
-                        <Text>{driver.truckCapacity}</Text>
+                        <Text>{driver.truckCapacity} tonnes</Text>
                       </HStack>
                     </VStack>
+                    {
+                      driver.reqByDealer === 'none' && driver.accByDriver === 'none' ?
+                      <Button 
+                        onPress={() => requestDriver(driver.id)}
+                        style={{marginVertical: 10}}
+                        title="Book Driver"
+                        color="black"
+                        tintColor='white'
+                      /> :
+                      driver.reqByDealer === 'sent' && driver.accByDriver === 'pending' ?
+                      <HStack center mt={20}>
+                        <Text>Request Pending, </Text>
+                        <Spacer />
+                        <Button
+                          onPress={() => removeRequest(driver.cartId, driver.id)}
+                          title="Cancel"
+                          color="red"
+                          tintColor='white'
+                          uppercase={false}
+                        />
+                      </HStack> :
+                      driver.reqByDealer === 'done' && driver.accByDriver === 'accepted' ?
+                      <HStack center mt={20}>
+                        <Text>Booked! </Text>
+                        <Spacer />
+                        <Button
+                          onPress={() => removeRequest(driver.cartId, driver.id)}
+                          title="Cancel"
+                          color="red"
+                          tintColor='white'
+                          uppercase={false}
+                        />
+                      </HStack> : <></>
+                    }
                   </>: null
                 }
               </Surface>
