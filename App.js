@@ -7,6 +7,7 @@ import SignupScreen from './pages/SignupScreen';
 import LoginScreen from './pages/LoginScreen';
 import SignupScreen2 from './pages/SignupScreen2';
 import DealerPages from './pages/dealer';
+import DriverPages from './pages/driver';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createNativeStackNavigator();
@@ -14,13 +15,18 @@ const Stack = createNativeStackNavigator();
 const App = () => {
 
   const [loggedIn, isLoggedIn] = React.useState(false);
+  const [userType, setUserType] = React.useState('');
 
     React.useEffect(() => {
       const checkLoggedIn = async () => {
         try {
           const value = await AsyncStorage.getItem('userId');
+          const user = await AsyncStorage.getItem('userType');
           if (value !== null) {
             isLoggedIn(true);
+          }
+          if (user !== null) {
+            setUserType(user);
           }
         } catch (e) {
           // error reading value
@@ -33,7 +39,7 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName={loggedIn ? "DealerPages" : "onBoarding"}
+        initialRouteName={loggedIn ? userType === 'Dealer' ? "DealerPages" : "DriverPages" : "onBoarding"}
       >
         <Stack.Screen 
           name="onBoarding" 
@@ -59,6 +65,13 @@ const App = () => {
         <Stack.Screen 
           name="DealerPages" 
           component={DealerPages} 
+          options={{
+            headerShown: false
+          }}
+        />
+        <Stack.Screen
+          name="DriverPages"
+          component={DriverPages}
           options={{
             headerShown: false
           }}
