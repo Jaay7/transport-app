@@ -37,7 +37,7 @@ const LoginScreen = ({navigation}) => {
 
   const handleDriverLogin = async() => {
     setLoading(true);
-    await axios.post('http://192.168.1.118:5000/api/driver/login', {
+    await axios.post('https://transport-backend-apis.herokuapp.com/api/driver/login', {
       email: email,
       password: password
     })
@@ -45,7 +45,7 @@ const LoginScreen = ({navigation}) => {
       console.log(res)
       AsyncStorage.setItem('userType', 'Driver');
       AsyncStorage.setItem('userId', res.data.id.toString());
-      // navigation.navigate('DriverPages');
+      navigation.navigate('DriverPages');
       setLoading(false);
     })
     .catch(err => {
@@ -96,6 +96,8 @@ const LoginScreen = ({navigation}) => {
             onPress={handleDriverLogin}
             title="Login as Driver" 
             uppercase={false}
+            loading={loading}
+            loadingIndicatorPosition="trailing"
             color="black" 
             style={{ marginTop: 16 }}
           />
